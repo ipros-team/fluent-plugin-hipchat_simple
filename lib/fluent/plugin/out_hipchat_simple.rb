@@ -65,7 +65,9 @@ module Fluent
 
     def format_message(record)
       result = ''
-      record['hostname'] = @hostname if @add_hostname
+      if @add_hostname and record['hostname'].nil?
+        record['hostname'] = @hostname
+      end
       erb_template = @format.gsub(/\$\{([^}]+)\}/, '<%= record["\1"] %>')
       result = ERB.new(erb_template).result(binding)
       if @display_record
